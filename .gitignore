@@ -1,0 +1,5 @@
+.ipynb_checkpoints/*
+*.zip
+__pycache__/*
+2021/*
+all_data/*
