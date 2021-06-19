@@ -88,6 +88,38 @@ def convert_nans(df: pd.DataFrame,
         df[col].replace(np.nan, replace_value, inplace=True)
     return df
 
+def create_binning(df: pd.DataFrame,
+                   col_src: str,
+                   col_tgt: str,
+                   cut_bins: List[int],
+                   labels: List[str]) -> pd.DataFrame:
+    """
+    creates binning for colum
+
+    Params:
+    -------
+    df : (dataframe) data with column to be binned
+    col_src : (str) column to be binned
+    col_tgt : (str) column to store binning results
+    cut_bins : (list of int) list values at which to cut_bins
+    labels : (list of str) labels to be used for bins
+
+    Returns:
+    --------
+    df : (dataframe) dataframe including converted bins
+    """
+    if labels == None:
+        df[col_tgt] = pd.cut(df[col_src], bins=cut_bins)
+    else:
+        df[col_tgt] = pd.cut(df[col_src],
+                             bins=cut_bins,
+                             labels=labels)
+
+    return df
+        
+
+
+
 
 if __name__ == "__main__":
     # loading data
@@ -101,5 +133,7 @@ if __name__ == "__main__":
                              cnf.DATE_FORMAT)
     df = convert_nans(df, cnf.YN_COLS,
                       cnf.YN_REPL_VAL)
-
-    print(df['DIED'].unique())
+    df = create_binning(df, 'AGE_YRS', 'AGE_BINS',
+                        cnf.CUT_BINS_AGE,
+                        cnf.BINS_LABELS_AGE)
+    print(df['AGE_BINS'].unique())
