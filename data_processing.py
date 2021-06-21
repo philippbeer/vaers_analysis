@@ -118,22 +118,46 @@ def create_binning(df: pd.DataFrame,
     return df
         
 
+def get_all_vaers_data(path: List[str] = cnf.PATH,
+                       pattern: str = cnf.FILENAME_PATTERN,
+                       dt_cols: List[str] = cnf.DATE_COLS,
+                       dt_format: str = cnf.DATE_FORMAT,
+                       nan_cols: List[str] = cnf.YN_COLS,
+                       nan_repl_val: str = cnf.YN_REPL_VAL,
+                       bin_src_col: str = cnf.BIN_SRC_COL_AGE,
+                       bin_tgt_col: str = cnf.BIN_TGT_COL_AGE,
+                       bin_cuts: List[int] = cnf.CUT_BINS_AGE,
+                       bin_labels: List[str] = cnf.BINS_LABELS_AGE
+                       ) -> None:
+    """
+    generating preprocessed dataframe from vaers data
+
+    Params:
+    -------
+    path : (str) file path where to look for files
+    pattern : (str) regex pattern for matching files
+    dt_cols : (list of str) list of columns to be converted
+    dt_format : (str) strf representation of date format in cols
+    nan_cols : (list of str) columns to be converted
+    nan_repl_val : (str) value to replace nans
+    bin_src_col : (str) column to be binned
+    bin_tgt_col : (str) column to store binning results
+    bin_cuts : (list of int) list values at which to cut_bins
+    bin_labels : (list of str) labels to be used for bins
 
 
-
-if __name__ == "__main__":
+    Returns:
+    --------
+    df : (dataframe) preprocessed dataframe
+    """
+    pass
     # loading data
-    fps = setup_filepaths(cnf.PATH,
-                          cnf.FILENAME_PATTERN)
-
+    fps = setup_filepaths(path, pattern)
     df = compile_df(fps)
 
     # data preprocessing
-    df = convert_to_datetime(df, cnf.DATE_COLS,
-                             cnf.DATE_FORMAT)
-    df = convert_nans(df, cnf.YN_COLS,
-                      cnf.YN_REPL_VAL)
-    df = create_binning(df, 'AGE_YRS', 'AGE_BINS',
-                        cnf.CUT_BINS_AGE,
-                        cnf.BINS_LABELS_AGE)
-    print(df['AGE_BINS'].unique())
+    df = convert_to_datetime(df, dt_cols, dt_format)
+    df = convert_nans(df, nan_cols, nan_repl_val)
+    df = create_binning(df, bin_src_col, bin_tgt_col,
+                        bin_cuts, bin_labels)
+    return df
